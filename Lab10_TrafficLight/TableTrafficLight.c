@@ -77,7 +77,7 @@ typedef const struct State STyp;
 #define Flash2OFF	8
 
 // The functioning of the program is described with a Moore Finite State Machine defined in a Struct State
-// There are 9 total states. Every state has an output that only depends on the current state PBout and PFout
+// There are 9 total states. Every state has an output(PBout and PFout) that only depends on the current state 
 // For every possible input (8 inputs from 000 to 111) there is a State Transition
 STyp FSM[9]={
  {0x0C, 0x02, 100,{GoW, GoW, WaitW, WaitW, WaitW, WaitW, WaitW, WaitW}},//0
@@ -106,7 +106,6 @@ void SysTick_Wait10ms(unsigned long delay);
 void SysTick_Wait(unsigned long delay);
 
 // ***** 3. Subroutines Section *****
-
 int main(void){ 
   TExaS_Init(SW_PIN_PE210, LED_PIN_PB543210,ScopeOff); // activate grader and set system clock to 80 MHz
   EnableInterrupts();
@@ -163,7 +162,6 @@ void PortF_Init(void) {
   //GPIO_PORTF_PUR_R = 0x11;    	// enable pull-up on PF0 and PF4
   GPIO_PORTF_DEN_R = 0x1F;      	// 7) enable digital I/O on PF4-0
 }
-
 // Initializez SysTick (clock counter, very precise when using external crystal and PLL)
 void SysTick_Init(void){
   NVIC_ST_CTRL_R = 0;             // disable SysTick during setup
