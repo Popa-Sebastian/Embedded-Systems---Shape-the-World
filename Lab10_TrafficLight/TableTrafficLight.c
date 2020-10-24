@@ -59,10 +59,10 @@ unsigned long Input;
 
 // Linked data structure
 struct State {
-  unsigned long PBOut;
-  unsigned long PFOut;	
-  unsigned long Time;  
-  unsigned long Next[9];
+  unsigned long PBOut;		// Output to Traffic Lights
+  unsigned long PFOut;		// Output to Pedestrian Crossing
+  unsigned long Time;  		// delay in 10ms units
+  unsigned long Next[9];	// Array of Transition States
 };
 typedef const struct State STyp;
 	
@@ -77,7 +77,7 @@ typedef const struct State STyp;
 #define Flash2OFF	8
 
 // The functioning of the program is described with a Moore Finite State Machine defined in a Struct State
-// There are 9 total states. Every state has an output(PBout and PFout) that only depends on the current state 
+// There are 9 total states. Every state has an output that only depends on the current state PBout and PFout
 // For every possible input (8 inputs from 000 to 111) there is a State Transition
 STyp FSM[9]={
  {0x0C, 0x02, 100,{GoW, GoW, WaitW, WaitW, WaitW, WaitW, WaitW, WaitW}},//0
@@ -113,16 +113,16 @@ int main(void){
   PortB_Init();		// OUTPUTS WEST:PB5-PB3=RYG, SOUTH:PB2-PB0=RYG
   PortE_Init();		// INPUTS: PE2=WALK, PE1=SOUTH, PE0=WEST
   PortF_Init();		// OUTPUTS PEDESTRIAN: PF3=G, PF1=R
-  SysTick_Init();	// Initializez SysTick for the Delay functions
+  SysTick_Init();	// Initializes SysTick for the Delay functions
 	
   State = GoW; 
   while(1) {
-	GPIO_PORTB_DATA_R = FSM[State].PBOut;
-	GPIO_PORTF_DATA_R = FSM[State].PFOut;
-	SysTick_Wait10ms(FSM[State].Time);
-	Input = GPIO_PORTE_DATA_R &0x07;
-	State = FSM[State].Next[Input];  
-  }
+		GPIO_PORTB_DATA_R = FSM[State].PBOut;	// Output to Traffic Lights
+		GPIO_PORTF_DATA_R = FSM[State].PFOut;	// Output to Pedestrian Crossing
+		SysTick_Wait10ms(FSM[State].Time);		// Delay function
+		Input = GPIO_PORTE_DATA_R &0x07;			// Reads inputs from the 3 switches (3 bits)
+		State = FSM[State].Next[Input];  			// Transition to next state
+		}
 }
 
 // Intilizes PORT_B
@@ -162,6 +162,7 @@ void PortF_Init(void) {
   //GPIO_PORTF_PUR_R = 0x11;    	// enable pull-up on PF0 and PF4
   GPIO_PORTF_DEN_R = 0x1F;      	// 7) enable digital I/O on PF4-0
 }
+
 // Initializez SysTick (clock counter, very precise when using external crystal and PLL)
 void SysTick_Init(void){
   NVIC_ST_CTRL_R = 0;             // disable SysTick during setup
