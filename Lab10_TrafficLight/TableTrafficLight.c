@@ -117,12 +117,12 @@ int main(void){
 	
   State = GoW; 
   while(1) {
-		GPIO_PORTB_DATA_R = FSM[State].PBOut;	// Output to Traffic Lights
-		GPIO_PORTF_DATA_R = FSM[State].PFOut;	// Output to Pedestrian Crossing
-		SysTick_Wait10ms(FSM[State].Time);		// Delay function
-		Input = GPIO_PORTE_DATA_R &0x07;			// Reads inputs from the 3 switches (3 bits)
-		State = FSM[State].Next[Input];  			// Transition to next state
-		}
+	GPIO_PORTB_DATA_R = FSM[State].PBOut;	// Output to Traffic Lights
+	GPIO_PORTF_DATA_R = FSM[State].PFOut;	// Output to Pedestrian Crossing
+	SysTick_Wait10ms(FSM[State].Time);	// Delay function
+	Input = GPIO_PORTE_DATA_R &0x07;	// Reads inputs from the 3 switches (3 bits)
+	State = FSM[State].Next[Input];  	// Transition to next state
+	}
 }
 
 // Intilizes PORT_B
